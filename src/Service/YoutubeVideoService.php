@@ -24,16 +24,18 @@ class YoutubeVideoService
         $this->params = $params;
     }
 
-    public function setEmptyDataFromFormRequest(Request $request):void
+    public function setEmptyDataFromFormRequest(Request &$request):void
     {
-        $youtube_form = $request->request->get('post')['youtube'];
+        if (!isset($request->request->get('post')['youtube'])){
+            return;
+        }
 
         $request_post = $request->request->get('post');
         $youtube_arr = $request_post['youtube'];
 
         $youtube_arr['active'] = true;
-        if(!empty($youtube_form['videoId'])){
-            $youtube_id = $this->getVideoId($youtube_form['videoId']);
+        if(!empty($youtube_arr['videoId'])){
+            $youtube_id = $this->getVideoId($youtube_arr['videoId']);
             if($this->checkActiveVideo($youtube_id)){
                 $youtube_arr = [
                     'videoId' => $youtube_id,
